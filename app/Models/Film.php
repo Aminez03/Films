@@ -8,17 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Film extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'name',
-        'image',
-        'rating',
-        'date',
-        'description',
-        'trailer',
-        'categorieID'
+        'name', 'image', 'rating', 'date', 'description', 'trailer', 'categorieID'
     ];
-    public function categories()
+
+    // Relation vers le modèle Categorie
+    public function categorie()
     {
-    return $this->belongsTo(Categorie::class,"categorieID");
+        return $this->belongsTo(Categorie::class, 'categorieID');
     }
 }

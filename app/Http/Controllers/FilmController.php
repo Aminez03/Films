@@ -97,19 +97,31 @@ class FilmController extends Controller
     public function filmsPaginate()
     {
         try {
-        $perPage = request()->input('pageSize', 2);
-        // Récupère la valeur dynamique pour la pagination
-        $films = Film::with('categorie')->paginate($perPage);
-        // Retourne le résultat en format JSON API
-        return response()->json([
-        'films' => $films->items(), // Les films paginés
-        'totalPages' => $films->lastPage(), // Le nombre de pages
-        ]);
+            // Récupérer la taille de la page depuis les paramètres de requête (3 par défaut)
+            $perPage = request()->input('pageSize', 3);
+    
+            // Récupérer les films avec la relation 'categorie' et les paginer
+            $films = Film::with('categorie')->paginate($perPage);
+    
+            // Construire une réponse JSON formatée
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'films' => $films->items(), // Les films de la page courante
+                    'totalPages' => $films->lastPage(), // Nombre total de pages
+                    'currentPage' => $films->currentPage(), // Page courante
+                    'totalItems' => $films->total(), // Nombre total d'éléments
+                ]
+            ], 200);
         } catch (\Exception $e) {
-        return response()->json("Selection impossible {$e->getMessage()}");
+            // En cas d'erreur, retourner un message clair avec un code d'erreur HTTP approprié
+            return response()->json([
+                'success' => false,
+                'message' => "Erreur lors de la récupération des films : {$e->getMessage()}"
+            ], 500);
         }
-        }
-
+    }
+    
 
 
 
